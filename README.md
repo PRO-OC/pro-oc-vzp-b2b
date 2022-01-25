@@ -8,7 +8,7 @@ Osobní informace pacientů podmíněné přihlášením do modulu [Pacienti COV
 
 ## Použití
 
-AKtuálně (k 24.1.2022) se nelze k [VZP B2B endpoint](https://prod.b2b.vzp.cz) dotazovat z rozšíření v prohlížeči z důvodu CORS Policy. Je zapotřebí zadat do nastavení vlastní proxy server, který dotaz zproztředkuje, např. [VZP B2B CORS Proxy](https://github.com/PRO-OC/pro-oc-vzp-b2b-cors-proxy).
+Aktuálně (k 24.1.2022) se nelze k [VZP B2B endpoint](https://prod.b2b.vzp.cz) dotazovat z rozšíření v prohlížeči z důvodu CORS Policy. Je zapotřebí zadat do nastavení vlastní proxy server, který dotaz zproztředkuje, např. [VZP B2B CORS Proxy](https://github.com/PRO-OC/pro-oc-vzp-b2b-cors-proxy).
 
 ## Žádanky testů COVID-19
 
