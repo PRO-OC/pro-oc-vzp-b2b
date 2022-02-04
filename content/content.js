@@ -9,7 +9,7 @@ function setVysledekKontrolyZdravotniPojistovnaText(text) {
     } else {
         VysledekKontrolyZdravotniPojistovnaText.style.display = "block";
     }
-    VysledekKontrolyZdravotniPojistovnaText.innerText = text;
+    VysledekKontrolyZdravotniPojistovnaText.innerHTML = text;
 }
 
 function VysledekKontrolyZdravotniPojistovnaText() {
