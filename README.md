@@ -25,3 +25,5 @@ Aktuálně (k 24.1.2022) se nelze k [VZP B2B endpoint](https://prod.b2b.vzp.cz) 
 - Na detailu profilu provádí kontrolu čísla pojištěnce (důležité při slučování profilů)
 
 ![Preview](preview/prubeh_pojisteni_detail_pacienta.png)
+
+![Preview](preview/prubeh_pojisteni_detail_pacienta_nepojisten.png)
