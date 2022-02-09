@@ -1,19 +1,32 @@
-function setVysledekKontrolyZdravotniPojistovnaText(text) {
-    var VysledekKontrolyZdravotniPojistovnaText = document.getElementById("VysledekKontrolyZdravotniPojistovna");
+function getVysledekKontrolyZdravotniPojistovnaTextElement(text) {
+    var VysledekKontrolyZdravotniPojistovnaTextElement = document.getElementById("VysledekKontrolyZdravotniPojistovna");
 
-    if(!VysledekKontrolyZdravotniPojistovnaText) {
-        VysledekKontrolyZdravotniPojistovnaText = document.createElement("div");
-        VysledekKontrolyZdravotniPojistovnaText.setAttribute("class", "textField");
-        VysledekKontrolyZdravotniPojistovnaText.setAttribute("id", "VysledekKontrolyZdravotniPojistovna");
-        ZdravotniPojistovnaKod.parentNode.insertBefore(VysledekKontrolyZdravotniPojistovnaText, ZdravotniPojistovnaKod.nextSibling);
+    if(!VysledekKontrolyZdravotniPojistovnaTextElement) {
+        VysledekKontrolyZdravotniPojistovnaTextElement = document.createElement("div");
+        VysledekKontrolyZdravotniPojistovnaTextElement.setAttribute("class", "textField");
     } else {
-        VysledekKontrolyZdravotniPojistovnaText.style.display = "block";
+        VysledekKontrolyZdravotniPojistovnaTextElement.style.display = "block";
     }
-    VysledekKontrolyZdravotniPojistovnaText.innerHTML = text;
+    VysledekKontrolyZdravotniPojistovnaTextElement.innerHTML = text;
+
+    return VysledekKontrolyZdravotniPojistovnaTextElement;
 }
 
 function VysledekKontrolyZdravotniPojistovnaText() {
+
+    const VysledekKontrolyZdravotniPojistovnaElementId = "VysledekKontrolyZdravotniPojistovna";
+
+    // Vystavení žádanky
     const ZdravotniPojistovnaKod = document.getElementById("ZdravotniPojistovnaKod");
+    const TestovanyCisloPojistence = document.getElementById("TestovanyCisloPojistence");
+
+    // Detail pacienta
+    const Pacient_CisloPojistenceLabelElement = document.querySelector('label[for="Pacient_CisloPojistence"]');
+    var DetailPacientCisloPojistence = null;
+    if(Pacient_CisloPojistenceLabelElement) {
+        DetailPacientCisloPojistence = Pacient_CisloPojistenceLabelElement.nextElementSibling.innerText;
+    }
+
     if(
         ZdravotniPojistovnaKod && (
             ZdravotniPojistovnaKod.value == "111" ||
@@ -23,46 +36,56 @@ function VysledekKontrolyZdravotniPojistovnaText() {
             ZdravotniPojistovnaKod.value == "209" ||
             ZdravotniPojistovnaKod.value == "211" ||
             ZdravotniPojistovnaKod.value == "213"
-        )
+        ) || Pacient_CisloPojistenceLabelElement
     ) {
-        const TestovanyCisloPojistence = document.getElementById("TestovanyCisloPojistence");
-        if(TestovanyCisloPojistence && TestovanyCisloPojistence.value) {
+        const CisloPojistence = DetailPacientCisloPojistence ? DetailPacientCisloPojistence : (TestovanyCisloPojistence ? TestovanyCisloPojistence.value : null)
+        const VysledekNextElement = ZdravotniPojistovnaKod ? ZdravotniPojistovnaKod : Pacient_CisloPojistenceLabelElement.nextElementSibling;
+
+        if(CisloPojistence) {
             chrome.runtime.sendMessage({
                 "text": "PrubehPojisteniDruhB2B",
                 "data": {
-                    "CisloPojistence": TestovanyCisloPojistence.value
+                    "CisloPojistence": CisloPojistence
                 }
             }, function(VysledekKontroly) {
-                if(
-                    VysledekKontroly 
-                ) {
+                if(VysledekKontroly) {
+
+                    var VysledekElement = null;
+
                     if(VysledekKontroly.stav == "pojisten") {
 
-                        if(VysledekKontroly.kodPojistovny != ZdravotniPojistovnaKod.value) {
+                        if(ZdravotniPojistovnaKod && VysledekKontroly.kodPojistovny != ZdravotniPojistovnaKod.value) {
                             alert("Neshoduje se kód pojišťovny na žádance: '" + ZdravotniPojistovnaKod.value + "' a kód pojištovny dohledaného k číslu pojištěnce: '" + VysledekKontroly.kodPojistovny + "'");
                         }
 
-                        setVysledekKontrolyZdravotniPojistovnaText(
+                        VysledekElement = getVysledekKontrolyZdravotniPojistovnaTextElement(
                             "Stav: " + VysledekKontroly.stav + "<br>" +
                             "Kód: " + VysledekKontroly.kodPojistovny + "<br>" +
                             "Název: " + VysledekKontroly.nazevPojistovny + "<br>" +
-                            "Druh: " + VysledekKontroly.druhPojisteni + "<br>"
+                            "Druh: " + VysledekKontroly.druhPojisteni + "<br>",
                         );
                     } else if(VysledekKontroly.stav == "nepojisten") {
 
                         alert("Nepojištěn");
 
-                        setVysledekKontrolyZdravotniPojistovnaText(
+                        VysledekElement = getVysledekKontrolyZdravotniPojistovnaTextElement(
                             "Stav: " + VysledekKontroly.stav + "<br>"
                         );
                     }
+
+                    VysledekElement.setAttribute("id", VysledekKontrolyZdravotniPojistovnaElementId);
+                    VysledekNextElement.parentNode.insertBefore(VysledekElement, VysledekNextElement.nextElementSibling);
                 }
             });
-        } else {
-            setVysledekKontrolyZdravotniPojistovnaText("Zadejte číslo pojištěnce");
+        } else if(ZdravotniPojistovnaKod) {
+            VysledekElement = getVysledekKontrolyZdravotniPojistovnaTextElement(
+                "Zadejte číslo pojištěnce"
+            );
+            VysledekElement.setAttribute("id", VysledekKontrolyZdravotniPojistovnaElementId);
+            VysledekNextElement.parentNode.insertBefore(VysledekElement, VysledekNextElement.nextElementSibling);
         }
     } else {
-        const VysledekKontrolyZdravotniPojistovnaText = document.getElementById("VysledekKontrolyZdravotniPojistovna");
+        const VysledekKontrolyZdravotniPojistovnaText = document.getElementById(VysledekKontrolyZdravotniPojistovnaElementId);
         if (VysledekKontrolyZdravotniPojistovnaText) {
             VysledekKontrolyZdravotniPojistovnaText.style.display = "none";
         }
@@ -85,7 +108,7 @@ if(TestovanyCisloPojistence) {
     });
 }
 
-VysledekKontrolyZdravotniPojistovnaText();
+VysledekKontrolyZdravotniPojistovnaText(ZdravotniPojistovnaKod, );
 
 
 const printDiv = document.getElementById("printDiv");
