@@ -66,7 +66,9 @@ function VysledekKontrolyZdravotniPojistovnaText() {
                         );
                     } else if(VysledekKontroly.stav == "nepojisten") {
 
-                        alert("Nepojištěn");
+                        if(ZdravotniPojistovnaKod) {
+                            alert("Nepojištěn");
+                        }
 
                         VysledekElement = getVysledekKontrolyZdravotniPojistovnaTextElement(
                             "Stav: " + VysledekKontroly.stav + "<br>"
