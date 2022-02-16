@@ -70,6 +70,8 @@ function PrubehPojisteniDruhB2B(CisloPojistence, onSuccess) {
                     };
                     onSuccess(results);
                 });
+            } else {
+                return;
             }
         })
         .catch(function (error) {
@@ -107,7 +109,7 @@ function stavSmlouvyICPICPPB2B(ICP_ICPP, onSuccess) {
             if (response.status == 200) {
                 response.text().then(function(text) {
                     var stavVyrizeniPozadavku = getSoapTagValue(text, "stavVyrizeniPozadavku");
-                  
+
                     if(stavVyrizeniPozadavku) {
                         var results = {
                             "odbornost": getSoapTagValue(text, "odbornost"),
@@ -129,10 +131,12 @@ function stavSmlouvyICPICPPB2B(ICP_ICPP, onSuccess) {
                         onSuccess(results);
                     }
                 });
+            } else {
+                return;
             }
-          })
-          .catch(function (error) {
-              console.log(error);
+        })
+        .catch(function (error) {
+            console.log(error);
         });
     });
 }
