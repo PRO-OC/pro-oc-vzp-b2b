@@ -33,86 +33,107 @@ function padStart(num, padLen, padChar) {
     return (pad + num).slice(-pad.length);
 }
 
+function getPrubehPojisteniDruhB2BPage() {
+    return "/B2BProxy/HttpProxy/PrubehPojisteniDruhB2B";
+}
+
 function PrubehPojisteniDruhB2B(CisloPojistence, onSuccess) {
 
     getOptionsFromLocalStorage(function(optionsURLSearchParams) {
-  
+
         var options = new URLSearchParams(optionsURLSearchParams);
-  
         var B2BServerUrlFromOptions = options.get("B2BServerUrl");
-  
-        var xmlhttp = new XMLHttpRequest();
-  
+        var B2BServerUrl = B2BServerUrlFromOptions ? B2BServerUrlFromOptions : DEFAULT_B2B_PROD_SERVER_URL;
+
         var DnesniDatum = new Date();
         DnesniDatumString = DnesniDatum.getFullYear() + "-" + padStart((DnesniDatum.getMonth() + 1 ), 2, "0") + "-" + padStart(DnesniDatum.getDate(), 2, "0");
-  
-        var sr = "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n\t<soap:Body xmlns:ns1=\"http://xmlns.gemsystem.cz/PrubehPojisteniDruhB2B\">\r\n\t\t<ns1:prubehPojisteniDruhB2BPozadavek>\r\n\t\t<ns1:cisloPojistence>" + CisloPojistence + "</ns1:cisloPojistence>\r\n\t\t<ns1:kDatu>" + DnesniDatumString + "</ns1:kDatu>\r\n\t\t</ns1:prubehPojisteniDruhB2BPozadavek>\r\n\t</soap:Body>\r\n</soap:Envelope>";
-  
-        xmlhttp.open('POST', (B2BServerUrlFromOptions ? B2BServerUrlFromOptions : DEFAULT_B2B_PROD_SERVER_URL) + "/B2BProxy/HttpProxy/PrubehPojisteniDruhB2B", true);
-        //xmlhttp.withCredentials = true;
-        xmlhttp.setRequestHeader('Content-Type', 'text/xml');
-        xmlhttp.onreadystatechange = function () {
-            if(xmlhttp.readyState === XMLHttpRequest.DONE && xmlhttp.status == 200) {  
-  
-                var results = {
-                    "stav": getSoapTagValue(xmlhttp.response, "stav"),
-                    "kodPojistovny": getSoapTagValue(xmlhttp.response, "kodPojistovny"),
-                    "nazevPojistovny": getSoapTagValue(xmlhttp.response, "nazevPojistovny"),
-                    "druhPojisteni": getSoapTagValue(xmlhttp.response, "druhPojisteni")
-                };
-  
-              onSuccess(results);
+
+        var body = "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n\t<soap:Body xmlns:ns1=\"http://xmlns.gemsystem.cz/PrubehPojisteniDruhB2B\">\r\n\t\t<ns1:prubehPojisteniDruhB2BPozadavek>\r\n\t\t<ns1:cisloPojistence>" + CisloPojistence + "</ns1:cisloPojistence>\r\n\t\t<ns1:kDatu>" + DnesniDatumString + "</ns1:kDatu>\r\n\t\t</ns1:prubehPojisteniDruhB2BPozadavek>\r\n\t</soap:Body>\r\n</soap:Envelope>";
+
+        var url = B2BServerUrl + getPrubehPojisteniDruhB2BPage();
+
+        fetch(url, {
+            method: 'post',
+            headers: {
+                "Content-type": "text/xml"
+            },
+            body: body
+        })
+        .then(function (response) {
+            if (response.status == 200) {
+                response.text().then(function(text) {
+                    var results = {
+                        "stav": getSoapTagValue(text, "stav"),
+                        "kodPojistovny": getSoapTagValue(text, "kodPojistovny"),
+                        "nazevPojistovny": getSoapTagValue(text, "nazevPojistovny"),
+                        "druhPojisteni": getSoapTagValue(text, "druhPojisteni")
+                    };
+                    onSuccess(results);
+                });
             }
-        }
-        xmlhttp.send(sr);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
     });
+}
+
+function getStavSmlouvyICPICPPB2B() {
+    return "/B2BProxy/HttpProxy/stavSmlouvyICPICPPB2B";
 }
 
 function stavSmlouvyICPICPPB2B(ICP_ICPP, onSuccess) {
 
     getOptionsFromLocalStorage(function(optionsURLSearchParams) {
-  
         var options = new URLSearchParams(optionsURLSearchParams);
-  
         var B2BServerUrlFromOptions = options.get("B2BServerUrl");
-  
-        var xmlhttp = new XMLHttpRequest();
-  
+        var B2BServerUrl = B2BServerUrlFromOptions ? B2BServerUrlFromOptions : DEFAULT_B2B_PROD_SERVER_URL;
+        
         var DnesniDatum = new Date();
         DnesniDatumString = DnesniDatum.getFullYear() + "-" + padStart((DnesniDatum.getMonth() + 1 ), 2, "0") + "-" + padStart(DnesniDatum.getDate(), 2, "0");
-  
-        var sr = "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n\t<soap:Body xmlns:ns1=\"http://xmlns.gemsystem.cz/stavSmlouvyICPICPPB2B\">\r\n\t\t<ns1:stavSmlouvyICPICPPB2BZadost>\r\n\t\t<ns1:ICP_ICPP>" + ICP_ICPP + "</ns1:ICP_ICPP>\r\n\t\t<ns1:kDatu>" + DnesniDatumString + "</ns1:kDatu>\r\n\t\t</ns1:stavSmlouvyICPICPPB2BZadost>\r\n\t</soap:Body>\r\n</soap:Envelope>";
-  
-        xmlhttp.open('POST', (B2BServerUrlFromOptions ? B2BServerUrlFromOptions : DEFAULT_B2B_PROD_SERVER_URL) + "/B2BProxy/HttpProxy/stavSmlouvyICPICPPB2B", true);
-        //xmlhttp.withCredentials = true;
-        xmlhttp.setRequestHeader('Content-Type', 'text/xml');
-        xmlhttp.onreadystatechange = function () {
-            if(xmlhttp.readyState === XMLHttpRequest.DONE && xmlhttp.status == 200) {  
-  
-                var stavVyrizeniPozadavku = getSoapTagValue(xmlhttp.response, "stavVyrizeniPozadavku");
-          
-                if(stavVyrizeniPozadavku) {
-                    var results = {
-                        "odbornost": getSoapTagValue(xmlhttp.response, "odbornost"),
-                        "datumOd": getSoapTagValue(xmlhttp.response, "datumOd"),
-                        "datumDo": getSoapTagValue(xmlhttp.response, "datumDo"),
-                        "nazevZZ": getSoapTagValue(xmlhttp.response, "nazevZZ"),
-                        "nazevP": getSoapTagValue(xmlhttp.response, "nazevP"),
-                        "ulice": getSoapTagValue(xmlhttp.response, "ulice"),
-                        "misto": getSoapTagValue(xmlhttp.response, "misto"),
-                        "psc": getSoapTagValue(xmlhttp.response, "psc"),
-                        "prijmeniJmeno": getSoapTagValue(xmlhttp.response, "prijmeniJmeno"),
-                        "stavVyrizeniPozadavku": stavVyrizeniPozadavku
-                    };
-                } else {
-                    var results = {
-                        "stavVyrizeniPozadavku": stavVyrizeniPozadavku
-                    };
-                }
-                onSuccess(results);
+    
+        var body = "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n\t<soap:Body xmlns:ns1=\"http://xmlns.gemsystem.cz/stavSmlouvyICPICPPB2B\">\r\n\t\t<ns1:stavSmlouvyICPICPPB2BZadost>\r\n\t\t<ns1:ICP_ICPP>" + ICP_ICPP + "</ns1:ICP_ICPP>\r\n\t\t<ns1:kDatu>" + DnesniDatumString + "</ns1:kDatu>\r\n\t\t</ns1:stavSmlouvyICPICPPB2BZadost>\r\n\t</soap:Body>\r\n</soap:Envelope>";
+    
+        var url = B2BServerUrl + getStavSmlouvyICPICPPB2B();
+    
+        fetch(url, {
+            method: 'post',
+            headers: {
+                "Content-type": "text/xml"
+            },
+            body: body
+        })
+        .then(function (response) {
+            if (response.status == 200) {
+                response.text().then(function(text) {
+                    var stavVyrizeniPozadavku = getSoapTagValue(text, "stavVyrizeniPozadavku");
+                  
+                    if(stavVyrizeniPozadavku) {
+                        var results = {
+                            "odbornost": getSoapTagValue(text, "odbornost"),
+                            "datumOd": getSoapTagValue(text, "datumOd"),
+                            "datumDo": getSoapTagValue(text, "datumDo"),
+                            "nazevZZ": getSoapTagValue(text, "nazevZZ"),
+                            "nazevP": getSoapTagValue(text, "nazevP"),
+                            "ulice": getSoapTagValue(text, "ulice"),
+                            "misto": getSoapTagValue(text, "misto"),
+                            "psc": getSoapTagValue(text, "psc"),
+                            "prijmeniJmeno": getSoapTagValue(text, "prijmeniJmeno"),
+                            "stavVyrizeniPozadavku": stavVyrizeniPozadavku
+                        };
+                        onSuccess(results);
+                    } else {
+                        var results = {
+                            "stavVyrizeniPozadavku": stavVyrizeniPozadavku
+                        };
+                        onSuccess(results);
+                    }
+                });
             }
-        }
-        xmlhttp.send(sr);
+          })
+          .catch(function (error) {
+              console.log(error);
+        });
     });
 }
 
