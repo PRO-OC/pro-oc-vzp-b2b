@@ -110,7 +110,7 @@ if(TestovanyCisloPojistence) {
     });
 }
 
-VysledekKontrolyZdravotniPojistovnaText(ZdravotniPojistovnaKod, );
+VysledekKontrolyZdravotniPojistovnaText();
 
 
 const printDiv = document.getElementById("printDiv");
