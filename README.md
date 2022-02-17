@@ -1,6 +1,6 @@
 # PRO OC VZP B2B
 
-[Rozšíření do Mozilla Firefox](https://addons.mozilla.org/addon/pro-oc-vzp-b2b/)
+[Rozšíření do Mozilla Firefox](https://addons.mozilla.org/addon/pro-oc-vzp-b2b/), [Doplněk do Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/pro-oc-vzp-b2b/jnapoepiholgibghopdmjmakfkmhdpca)
 
 Rozšíření přidává užitečné funkce za pomoci [VZP B2B](https://www.vzp.cz/e-vzp/b2b-komunikace) do modulu [Pacienti COVID-19](https://ereg.ksrzis.cz/Registr/CUDZadanky/VyhledaniPacienta) a [Žádanky testů COVID-19](https://eregpublicsecure.ksrzis.cz/Registr/CUD/Overeni) s cílem usnadnit práci s těmito systémy.
 
