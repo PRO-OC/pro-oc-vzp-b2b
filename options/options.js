@@ -1,6 +1,9 @@
 // Duplikované v background/background.js
 const chromeLocalStorageOptionsNamespace = "pro-oc-vzp-b2b-options";
 
+const B2B_SERVER_URL = "B2BServerUrl";
+const ENCRYPTING_DISABLED = "EncryptingDisabled";
+
 function setOptionsToLocalStorage(options) {
   chrome.storage.local.set({[chromeLocalStorageOptionsNamespace] : options});
 }
@@ -12,26 +15,27 @@ function getOptionsFromLocalStorage(callback) {
 }
 
 function setB2BServerUrl(B2BServerUrl) {
-  var B2BServerUrlElement = document.getElementById("B2BServerUrl");
+  var B2BServerUrlElement = document.getElementById(B2B_SERVER_URL);
   B2BServerUrlElement.value = B2BServerUrl;
 }
 
-function saveOptions(B2BServerUrl) {
+function setEncryptingDisabled(EncryptingDisabled) {
+  var EncryptingDisabledElement = document.getElementById(ENCRYPTING_DISABLED);
+  EncryptingDisabledElement.checked = EncryptingDisabled;
+}
+
+function saveOptions(B2BServerUrl, EncryptingDisabled) {
   var options = new URLSearchParams();
-  options.set("B2BServerUrl", B2BServerUrl);
+  options.set(B2B_SERVER_URL, B2BServerUrl);
+  options.set(ENCRYPTING_DISABLED, EncryptingDisabled);
 
   setOptionsToLocalStorage(options.toString());
 }
 
 function getOptions(callback) {
   getOptionsFromLocalStorage(function(optionsURLSearchParams) {
-
     var options = new URLSearchParams(optionsURLSearchParams);
-    var B2BServerUrl = options.get("B2BServerUrl");
-
-    callback({
-      "B2BServerUrl": B2BServerUrl
-    });
+    callback(options);
   });
 }
 
@@ -44,13 +48,15 @@ if(optionsForm) {
     var optionsFormData = new FormData(optionsForm);
 
     saveOptions(
-      optionsFormData.get("B2BServerUrl")
+      optionsFormData.get(B2B_SERVER_URL),
+      optionsFormData.get(ENCRYPTING_DISABLED)
     )
   });
 }
 
 window.onload = function() {
   getOptions(function(options) {
-    setB2BServerUrl(options.B2BServerUrl);
+    setB2BServerUrl(options.get(B2B_SERVER_URL));
+    setEncryptingDisabled(options.get(ENCRYPTING_DISABLED) == "true" ? true : false);
   });
 };

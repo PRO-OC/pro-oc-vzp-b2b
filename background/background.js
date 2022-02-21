@@ -37,6 +37,26 @@ function getPrubehPojisteniDruhB2BPage() {
     return "/B2BProxy/HttpProxy/PrubehPojisteniDruhB2B";
 }
 
+function encryptBody(body) {
+    return btoa(encodeURIComponent(body))
+}
+
+function getContentType(EncryptingDisabled) {
+    return !EncryptingDisabled ? "text/plain" : "text/xml";
+}
+
+function decryptBody(body) {
+    return decodeURIComponent(atob(body));
+}
+
+function getRequestBody(EncryptingDisabled, body) {
+    return !EncryptingDisabled ? encryptBody(body) : body
+}
+
+function getResponseBody(EncryptingDisabled, body) {
+    return !EncryptingDisabled ? decryptBody(body) : body;
+}
+
 function PrubehPojisteniDruhB2B(CisloPojistence, onSuccess) {
 
     getOptionsFromLocalStorage(function(optionsURLSearchParams) {
@@ -45,31 +65,41 @@ function PrubehPojisteniDruhB2B(CisloPojistence, onSuccess) {
         var B2BServerUrlFromOptions = options.get("B2BServerUrl");
         var B2BServerUrl = B2BServerUrlFromOptions ? B2BServerUrlFromOptions : DEFAULT_B2B_PROD_SERVER_URL;
 
+        var EncryptingDisabled = options.get("EncryptingDisabled");
+
         var DnesniDatum = new Date();
         DnesniDatumString = DnesniDatum.getFullYear() + "-" + padStart((DnesniDatum.getMonth() + 1 ), 2, "0") + "-" + padStart(DnesniDatum.getDate(), 2, "0");
 
-        var body = "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n\t<soap:Body xmlns:ns1=\"http://xmlns.gemsystem.cz/PrubehPojisteniDruhB2B\">\r\n\t\t<ns1:prubehPojisteniDruhB2BPozadavek>\r\n\t\t<ns1:cisloPojistence>" + CisloPojistence + "</ns1:cisloPojistence>\r\n\t\t<ns1:kDatu>" + DnesniDatumString + "</ns1:kDatu>\r\n\t\t</ns1:prubehPojisteniDruhB2BPozadavek>\r\n\t</soap:Body>\r\n</soap:Envelope>";
+        var body = "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\"><soap:Body xmlns:ns1=\"http://xmlns.gemsystem.cz/PrubehPojisteniDruhB2B\"><ns1:prubehPojisteniDruhB2BPozadavek><ns1:cisloPojistence>" + CisloPojistence + "</ns1:cisloPojistence><ns1:kDatu>" + DnesniDatumString + "</ns1:kDatu></ns1:prubehPojisteniDruhB2BPozadavek></soap:Body></soap:Envelope>";
 
         var url = B2BServerUrl + getPrubehPojisteniDruhB2BPage();
 
         fetch(url, {
             method: 'post',
             headers: {
-                "Content-type": "text/xml"
+                "Content-type": getContentType(EncryptingDisabled)
             },
-            body: body
+            body: getRequestBody(EncryptingDisabled, body)
         })
         .then(function (response) {
             if (response.status == 200) {
-                response.text().then(function(text) {
-                    var results = {
-                        "stav": getSoapTagValue(text, "stav"),
-                        "kodPojistovny": getSoapTagValue(text, "kodPojistovny"),
-                        "nazevPojistovny": getSoapTagValue(text, "nazevPojistovny"),
-                        "druhPojisteni": getSoapTagValue(text, "druhPojisteni")
-                    };
-                    onSuccess(results);
-                });
+                try {
+                    response.text().then(function(responseText) {
+
+                        var text = getResponseBody(EncryptingDisabled, responseText)
+
+                        var results = {
+                            "stav": getSoapTagValue(text, "stav"),
+                            "kodPojistovny": getSoapTagValue(text, "kodPojistovny"),
+                            "nazevPojistovny": getSoapTagValue(text, "nazevPojistovny"),
+                            "druhPojisteni": getSoapTagValue(text, "druhPojisteni")
+                        };
+                        onSuccess(results);
+                    });
+                } catch(err) {
+                    console.log(err);
+                    return;
+                }
             } else {
                 return;
             }
@@ -90,24 +120,29 @@ function stavSmlouvyICPICPPB2B(ICP_ICPP, onSuccess) {
         var options = new URLSearchParams(optionsURLSearchParams);
         var B2BServerUrlFromOptions = options.get("B2BServerUrl");
         var B2BServerUrl = B2BServerUrlFromOptions ? B2BServerUrlFromOptions : DEFAULT_B2B_PROD_SERVER_URL;
-        
+
+        var EncryptingDisabled = options.get("EncryptingDisabled");
+
         var DnesniDatum = new Date();
         DnesniDatumString = DnesniDatum.getFullYear() + "-" + padStart((DnesniDatum.getMonth() + 1 ), 2, "0") + "-" + padStart(DnesniDatum.getDate(), 2, "0");
-    
-        var body = "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n\t<soap:Body xmlns:ns1=\"http://xmlns.gemsystem.cz/stavSmlouvyICPICPPB2B\">\r\n\t\t<ns1:stavSmlouvyICPICPPB2BZadost>\r\n\t\t<ns1:ICP_ICPP>" + ICP_ICPP + "</ns1:ICP_ICPP>\r\n\t\t<ns1:kDatu>" + DnesniDatumString + "</ns1:kDatu>\r\n\t\t</ns1:stavSmlouvyICPICPPB2BZadost>\r\n\t</soap:Body>\r\n</soap:Envelope>";
-    
+
+        var body = "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\"><soap:Body xmlns:ns1=\"http://xmlns.gemsystem.cz/stavSmlouvyICPICPPB2B\"><ns1:stavSmlouvyICPICPPB2BZadost><ns1:ICP_ICPP>" + ICP_ICPP + "</ns1:ICP_ICPP><ns1:kDatu>" + DnesniDatumString + "</ns1:kDatu></ns1:stavSmlouvyICPICPPB2BZadost></soap:Body></soap:Envelope>";
+
         var url = B2BServerUrl + getStavSmlouvyICPICPPB2B();
     
         fetch(url, {
             method: 'post',
             headers: {
-                "Content-type": "text/xml"
+                "Content-type": getContentType(EncryptingDisabled)
             },
-            body: body
+            body: getRequestBody(EncryptingDisabled, body)
         })
         .then(function (response) {
             if (response.status == 200) {
-                response.text().then(function(text) {
+                response.text().then(function(responseText) {
+
+                    var text = getResponseBody(EncryptingDisabled, responseText);
+
                     var stavVyrizeniPozadavku = getSoapTagValue(text, "stavVyrizeniPozadavku");
 
                     if(stavVyrizeniPozadavku) {

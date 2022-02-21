@@ -38,6 +38,7 @@ function VysledekKontrolyZdravotniPojistovnaText() {
             ZdravotniPojistovnaKod.value == "213"
         ) || Pacient_CisloPojistenceLabelElement
     ) {
+        const CisloPojistenceElement = Pacient_CisloPojistenceLabelElement ? Pacient_CisloPojistenceLabelElement : TestovanyCisloPojistence;
         const CisloPojistence = DetailPacientCisloPojistence ? DetailPacientCisloPojistence : (TestovanyCisloPojistence ? TestovanyCisloPojistence.value : null)
         const VysledekNextElement = ZdravotniPojistovnaKod ? ZdravotniPojistovnaKod : Pacient_CisloPojistenceLabelElement.nextElementSibling;
 
@@ -48,6 +49,7 @@ function VysledekKontrolyZdravotniPojistovnaText() {
                     "CisloPojistence": CisloPojistence
                 }
             }, function(VysledekKontroly) {
+
                 if(VysledekKontroly) {
 
                     var VysledekElement = null;
@@ -79,7 +81,7 @@ function VysledekKontrolyZdravotniPojistovnaText() {
                     VysledekNextElement.parentNode.insertBefore(VysledekElement, VysledekNextElement.nextElementSibling);
                 }
             });
-        } else if(ZdravotniPojistovnaKod) {
+        } else if(CisloPojistenceElement && ZdravotniPojistovnaKod) {
             VysledekElement = getVysledekKontrolyZdravotniPojistovnaTextElement(
                 "Zadejte číslo pojištěnce"
             );
