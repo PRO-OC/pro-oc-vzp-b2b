@@ -10,7 +10,7 @@ Osobní informace pacientů podmíněné přihlášením do modulu [Pacienti COV
 
 ## Použití
 
-Aktuálně (k 24.1.2022) se nelze k [VZP B2B endpoint](https://prod.b2b.vzp.cz) dotazovat z rozšíření v prohlížeči z důvodu CORS Policy. Je zapotřebí zadat do nastavení vlastní proxy server, který dotaz zproztředkuje, např. [VZP B2B CORS Proxy](https://github.com/PRO-OC/pro-oc-vzp-b2b-cors-proxy).
+Aktuálně (k 24.1.2022) se nelze k [VZP B2B endpoint](https://prod.b2b.vzp.cz) dotazovat z rozšíření v prohlížeči z důvodu CORS Policy. Je zapotřebí zadat do nastavení vlastní proxy server, který dotaz zproztředkuje, např. [VZP B2B CORS Proxy](https://github.com/PRO-OC/pro-oc-vzp-b2b-cors-proxy). Defaultně se body požadavků posílají jako base64 `btoa(encodeURIComponent(body)`. Očekává se, že i z proxy serveru body takto přijde, tedy body bude dekódováno `decodeURIComponent(atob(body))`. Toto chování lze ale v nastavení vypnout.
 
 ## Žádanky testů COVID-19
 
