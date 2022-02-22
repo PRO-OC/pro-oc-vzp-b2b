@@ -65,7 +65,7 @@ function PrubehPojisteniDruhB2B(CisloPojistence, onSuccess, onError) {
         var B2BServerUrlFromOptions = options.get("B2BServerUrl");
         var B2BServerUrl = B2BServerUrlFromOptions ? B2BServerUrlFromOptions : DEFAULT_B2B_PROD_SERVER_URL;
 
-        var EncryptingDisabled = options.get("EncryptingDisabled");
+        var EncryptingDisabled = options.get("EncryptingDisabled") == "true" ? true : false;
 
         var DnesniDatum = new Date();
         DnesniDatumString = DnesniDatum.getFullYear() + "-" + padStart((DnesniDatum.getMonth() + 1 ), 2, "0") + "-" + padStart(DnesniDatum.getDate(), 2, "0");

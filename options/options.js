@@ -47,9 +47,11 @@ if(optionsForm) {
 
     var optionsFormData = new FormData(optionsForm);
 
+    var EncryptingDisabled = document.getElementById(ENCRYPTING_DISABLED);
+
     saveOptions(
       optionsFormData.get(B2B_SERVER_URL),
-      optionsFormData.get(ENCRYPTING_DISABLED)
+      EncryptingDisabled ? EncryptingDisabled.checked : false
     )
   });
 }
