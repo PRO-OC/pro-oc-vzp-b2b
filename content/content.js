@@ -134,25 +134,26 @@ if(printDiv) {
             "ICP": ICP
         }
     }, function(VysledekKontroly) {
+
+        var tableElement = document.createElement("table");
+            tableElement.setAttribute("class", "zadanka");
+            tableElement.setAttribute("style", "width: 100%;");
+
+        var tbodyElement = document.createElement("tbody");
+            tableElement.appendChild(tbodyElement);
+
+        var thHeaderElement = document.createElement("th");
+            thHeaderElement.setAttribute("colspan", 2);
+            thHeaderElement.innerText = "Smlouva s pojišťovnou žádajícího zařízení / Insurance contract of requesting facility";
+
+        var trHeaderElement = document.createElement("tr");
+            trHeaderElement.appendChild(thHeaderElement);
+            tableElement.appendChild(trHeaderElement);
+
         if(VysledekKontroly) {
             if(
                 VysledekKontroly.stavVyrizeniPozadavku
             ) {
-                var tableElement = document.createElement("table");
-                    tableElement.setAttribute("class", "zadanka");
-                    tableElement.setAttribute("style", "width: 100%;");
-
-                var tbodyElement = document.createElement("tbody");
-                    tableElement.appendChild(tbodyElement);
-
-                var thHeaderElement = document.createElement("th");
-                    thHeaderElement.setAttribute("colspan", 2);
-                    thHeaderElement.innerText = "Smlouva s pojišťovnou žádajícího zařízení / Insurance contract of requesting facility";
-
-                var trHeaderElement = document.createElement("tr");
-                    trHeaderElement.appendChild(thHeaderElement);
-                    tableElement.appendChild(trHeaderElement);
-
                 tableElement.appendChild(createRow("Odbornost / Expertise of medical facility", VysledekKontroly.odbornost));
                 tableElement.appendChild(createRow("Datum od / Date from", VysledekKontroly.datumOd));
                 tableElement.appendChild(createRow("Datum do / Date to", VysledekKontroly.datumDo));
@@ -162,20 +163,32 @@ if(printDiv) {
                 tableElement.appendChild(createRow("Místo / Place", VysledekKontroly.misto));
                 tableElement.appendChild(createRow("PSČ / Postcode", VysledekKontroly.psc));
                 tableElement.appendChild(createRow("Přijmení a jméno / Surname and first name", VysledekKontroly.prijmeniJmeno));
-
-                printDiv.insertBefore(tableElement, printDiv.lastChild);
-                printDiv.insertBefore(document.createElement("br"), tableElement);
             } else {
                 alert("Žádající zdravotnické zařízení nemá smlouvu s pojišťovnou")
             }
+        } else {
+            tableElement.appendChild(createRowColSpan2("Nebylo možné ověřit. Problém na straně zprostředkovatele ověření nebo poskytovatele ověření VZP"));
         }
+
+        printDiv.insertBefore(tableElement, printDiv.lastChild);
+        printDiv.insertBefore(document.createElement("br"), tableElement);
     });
+}
+
+function createRowColSpan2(labelText) {
+    var trElement = document.createElement("tr");
+    var tdElement = document.createElement("td");
+    tdElement.setAttribute("colspan", "2");
+    tdElement.innerText = labelText;
+    trElement.appendChild(tdElement);
+    return trElement;
 }
 
 function createRow(labelText, valueText) {
     var trElement = document.createElement("tr");
     var tdElement = document.createElement("td");
     tdElement.setAttribute("style", "width: 30%;");
+    tdElement.setAttribute("colspan", "2");
     tdElement.innerText = labelText;
     trElement.appendChild(tdElement);
     var tdValueElement = document.createElement("td");

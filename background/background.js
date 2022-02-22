@@ -101,7 +101,7 @@ function PrubehPojisteniDruhB2B(CisloPojistence, onSuccess, onError) {
                     onError();
                 }
             } else {
-                return;
+                onError();
             }
         })
         .catch(function (error) {
@@ -115,7 +115,7 @@ function getStavSmlouvyICPICPPB2B() {
     return "/B2BProxy/HttpProxy/stavSmlouvyICPICPPB2B";
 }
 
-function stavSmlouvyICPICPPB2B(ICP_ICPP, onSuccess) {
+function stavSmlouvyICPICPPB2B(ICP_ICPP, onSuccess, onError) {
 
     getOptionsFromLocalStorage(function(optionsURLSearchParams) {
         var options = new URLSearchParams(optionsURLSearchParams);
@@ -140,39 +140,45 @@ function stavSmlouvyICPICPPB2B(ICP_ICPP, onSuccess) {
         })
         .then(function (response) {
             if (response.status == 200) {
-                response.text().then(function(responseText) {
+                try {
+                    response.text().then(function(responseText) {
 
-                    var text = getResponseBody(EncryptingDisabled, responseText);
+                        var text = getResponseBody(EncryptingDisabled, responseText);
 
-                    var stavVyrizeniPozadavku = getSoapTagValue(text, "stavVyrizeniPozadavku");
+                        var stavVyrizeniPozadavku = getSoapTagValue(text, "stavVyrizeniPozadavku");
 
-                    if(stavVyrizeniPozadavku) {
-                        var results = {
-                            "odbornost": getSoapTagValue(text, "odbornost"),
-                            "datumOd": getSoapTagValue(text, "datumOd"),
-                            "datumDo": getSoapTagValue(text, "datumDo"),
-                            "nazevZZ": getSoapTagValue(text, "nazevZZ"),
-                            "nazevP": getSoapTagValue(text, "nazevP"),
-                            "ulice": getSoapTagValue(text, "ulice"),
-                            "misto": getSoapTagValue(text, "misto"),
-                            "psc": getSoapTagValue(text, "psc"),
-                            "prijmeniJmeno": getSoapTagValue(text, "prijmeniJmeno"),
-                            "stavVyrizeniPozadavku": stavVyrizeniPozadavku
-                        };
-                        onSuccess(results);
-                    } else {
-                        var results = {
-                            "stavVyrizeniPozadavku": stavVyrizeniPozadavku
-                        };
-                        onSuccess(results);
-                    }
-                });
+                        if(stavVyrizeniPozadavku) {
+                            var results = {
+                                "odbornost": getSoapTagValue(text, "odbornost"),
+                                "datumOd": getSoapTagValue(text, "datumOd"),
+                                "datumDo": getSoapTagValue(text, "datumDo"),
+                                "nazevZZ": getSoapTagValue(text, "nazevZZ"),
+                                "nazevP": getSoapTagValue(text, "nazevP"),
+                                "ulice": getSoapTagValue(text, "ulice"),
+                                "misto": getSoapTagValue(text, "misto"),
+                                "psc": getSoapTagValue(text, "psc"),
+                                "prijmeniJmeno": getSoapTagValue(text, "prijmeniJmeno"),
+                                "stavVyrizeniPozadavku": stavVyrizeniPozadavku
+                            };
+                            onSuccess(results);
+                        } else {
+                            var results = {
+                                "stavVyrizeniPozadavku": stavVyrizeniPozadavku
+                            };
+                            onSuccess(results);
+                        }
+                    });
+                } catch(err) {
+                    console.log(err)
+                    onError();
+                }
             } else {
-                return;
+                onError();
             }
         })
         .catch(function (error) {
             console.log(error);
+            onError();
         });
     });
 }
