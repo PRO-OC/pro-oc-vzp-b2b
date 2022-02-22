@@ -81,7 +81,7 @@ function VysledekKontrolyZdravotniPojistovnaText() {
                     VysledekNextElement.parentNode.insertBefore(VysledekElement, VysledekNextElement.nextElementSibling);
                 } else {
                     VysledekElement = getVysledekKontrolyZdravotniPojistovnaTextElement(
-                        "Nebylo možné ověřit. Problém na straně zprostředkovatele ověření nebo poskytovatele ověření VZP"
+                        "Nebylo možné ověřit. Problém na straně zprostředkovatele ověření nebo poskytovatele ověření VZP."
                     );
                     VysledekElement.setAttribute("id", VysledekKontrolyZdravotniPojistovnaElementId);
                     VysledekNextElement.parentNode.insertBefore(VysledekElement, VysledekNextElement.nextElementSibling);
@@ -89,7 +89,7 @@ function VysledekKontrolyZdravotniPojistovnaText() {
             });
         } else if(CisloPojistenceElement && ZdravotniPojistovnaKod) {
             VysledekElement = getVysledekKontrolyZdravotniPojistovnaTextElement(
-                "Zadejte číslo pojištěnce"
+                "Zadejte číslo pojištěnce."
             );
             VysledekElement.setAttribute("id", VysledekKontrolyZdravotniPojistovnaElementId);
             VysledekNextElement.parentNode.insertBefore(VysledekElement, VysledekNextElement.nextElementSibling);
@@ -167,7 +167,7 @@ if(printDiv) {
                 alert("Žádající zdravotnické zařízení nemá smlouvu s pojišťovnou")
             }
         } else {
-            tableElement.appendChild(createRowColSpan2("Nebylo možné ověřit. Problém na straně zprostředkovatele ověření nebo poskytovatele ověření VZP"));
+            tableElement.appendChild(createRowColSpan2("Nebylo možné ověřit. Problém na straně zprostředkovatele ověření nebo poskytovatele ověření VZP."));
         }
 
         printDiv.insertBefore(tableElement, printDiv.lastChild);
