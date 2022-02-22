@@ -21,6 +21,7 @@ Aktuálně (k 24.1.2022) se nelze k [VZP B2B endpoint](https://prod.b2b.vzp.cz) 
 - Při vystavování žádanky provádí kontrolu čísla pojištěnce 
 
 ![Preview](preview/prubeh_pojisteni_pri_vytvareni.png)
+![Preview](preview/nebylo_mozne_overit.png)
 
 ## Pacienti COVID-19
 

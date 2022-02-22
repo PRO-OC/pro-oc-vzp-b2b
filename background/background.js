@@ -57,7 +57,7 @@ function getResponseBody(EncryptingDisabled, body) {
     return !EncryptingDisabled ? decryptBody(body) : body;
 }
 
-function PrubehPojisteniDruhB2B(CisloPojistence, onSuccess) {
+function PrubehPojisteniDruhB2B(CisloPojistence, onSuccess, onError) {
 
     getOptionsFromLocalStorage(function(optionsURLSearchParams) {
 
@@ -97,8 +97,8 @@ function PrubehPojisteniDruhB2B(CisloPojistence, onSuccess) {
                         onSuccess(results);
                     });
                 } catch(err) {
-                    console.log(err);
-                    return;
+                    console.log(err)
+                    onError();
                 }
             } else {
                 return;
@@ -106,6 +106,7 @@ function PrubehPojisteniDruhB2B(CisloPojistence, onSuccess) {
         })
         .catch(function (error) {
             console.log(error);
+            onError();
         });
     });
 }
@@ -180,11 +181,15 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
     if (msg.text === 'PrubehPojisteniDruhB2B' && msg.data.CisloPojistence) {
         PrubehPojisteniDruhB2B(msg.data.CisloPojistence, function(responsePrubehPojisteniDruhB2B) {
             sendResponse(responsePrubehPojisteniDruhB2B);
+        }, function() {
+            sendResponse(false);
         });
         return true;
     } else if (msg.text === 'stavSmlouvyICPICPPB2B' && msg.data.ICP) {
         stavSmlouvyICPICPPB2B(msg.data.ICP, function(responseStavSmlouvyICP) {
             sendResponse(responseStavSmlouvyICP);
+        }, function() {
+            sendResponse(false);
         });
         return true;
     }

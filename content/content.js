@@ -79,6 +79,12 @@ function VysledekKontrolyZdravotniPojistovnaText() {
 
                     VysledekElement.setAttribute("id", VysledekKontrolyZdravotniPojistovnaElementId);
                     VysledekNextElement.parentNode.insertBefore(VysledekElement, VysledekNextElement.nextElementSibling);
+                } else {
+                    VysledekElement = getVysledekKontrolyZdravotniPojistovnaTextElement(
+                        "Nebylo možné ověřit. Problém na straně zprostředkovatele ověření nebo poskytovatele ověření VZP"
+                    );
+                    VysledekElement.setAttribute("id", VysledekKontrolyZdravotniPojistovnaElementId);
+                    VysledekNextElement.parentNode.insertBefore(VysledekElement, VysledekNextElement.nextElementSibling);
                 }
             });
         } else if(CisloPojistenceElement && ZdravotniPojistovnaKod) {
