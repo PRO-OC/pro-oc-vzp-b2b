@@ -1,3 +1,7 @@
+function getRegistrCUDOvereniUrl() {
+    return "/Registr/CUD/Overeni";
+}
+
 function getVysledekKontrolyZdravotniPojistovnaTextElement(text) {
     var VysledekKontrolyZdravotniPojistovnaTextElement = document.getElementById("VysledekKontrolyZdravotniPojistovna");
 
@@ -123,7 +127,7 @@ VysledekKontrolyZdravotniPojistovnaText();
 
 const printDiv = document.getElementById("printDiv");
 
-if(printDiv) {
+if(printDiv && window.location.pathname == getRegistrCUDOvereniUrl()) {
     var ICPElement = document.evaluate('//td[contains(text(), "IČP / Branch ID No.")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
 
     var ICP = ICPElement.singleNodeValue.nextSibling.nextSibling.innerText;
@@ -188,7 +192,6 @@ function createRow(labelText, valueText) {
     var trElement = document.createElement("tr");
     var tdElement = document.createElement("td");
     tdElement.setAttribute("style", "width: 30%;");
-    tdElement.setAttribute("colspan", "2");
     tdElement.innerText = labelText;
     trElement.appendChild(tdElement);
     var tdValueElement = document.createElement("td");
