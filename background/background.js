@@ -1,3 +1,5 @@
+importScripts("../lib/crypto-js.min.js");
+
 // Duplikované v options/options.js
 const chromeLocalStorageOptionsNamespace = "pro-oc-vzp-b2b-options";
 
@@ -37,24 +39,28 @@ function getPrubehPojisteniDruhB2BPage() {
     return "/B2BProxy/HttpProxy/PrubehPojisteniDruhB2B";
 }
 
-function encryptBody(body) {
-    return btoa(encodeURIComponent(body))
+function encryptBody(body, key) {
+    let encJson = CryptoJS.AES.encrypt(JSON.stringify( { body }), key).toString();
+    let encData = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(encJson));
+    return encData;
+}
+
+function decryptBody(body, key) {
+    let decData = CryptoJS.enc.Base64.parse(body).toString(CryptoJS.enc.Utf8);
+    let bytes = CryptoJS.AES.decrypt(decData, key).toString(CryptoJS.enc.Utf8);
+    return JSON.parse(bytes).body;
 }
 
 function getContentType(EncryptingDisabled) {
     return !EncryptingDisabled ? "text/plain" : "text/xml";
 }
 
-function decryptBody(body) {
-    return decodeURIComponent(atob(body));
+function getRequestBody(EncryptingDisabled, body, key) {
+    return !EncryptingDisabled ? encryptBody(body, key) : body
 }
 
-function getRequestBody(EncryptingDisabled, body) {
-    return !EncryptingDisabled ? encryptBody(body) : body
-}
-
-function getResponseBody(EncryptingDisabled, body) {
-    return !EncryptingDisabled ? decryptBody(body) : body;
+function getResponseBody(EncryptingDisabled, body, key) {
+    return !EncryptingDisabled ? decryptBody(body, key) : body;
 }
 
 function PrubehPojisteniDruhB2B(CisloPojistence, onSuccess, onError) {
@@ -66,6 +72,7 @@ function PrubehPojisteniDruhB2B(CisloPojistence, onSuccess, onError) {
         var B2BServerUrl = B2BServerUrlFromOptions ? B2BServerUrlFromOptions : DEFAULT_B2B_PROD_SERVER_URL;
 
         var EncryptingDisabled = options.get("EncryptingDisabled") == "true" ? true : false;
+        var EncryptingPassword = options.get("EncryptingPassword");
 
         var DnesniDatum = new Date();
         DnesniDatumString = DnesniDatum.getFullYear() + "-" + padStart((DnesniDatum.getMonth() + 1 ), 2, "0") + "-" + padStart(DnesniDatum.getDate(), 2, "0");
@@ -74,19 +81,21 @@ function PrubehPojisteniDruhB2B(CisloPojistence, onSuccess, onError) {
 
         var url = B2BServerUrl + getPrubehPojisteniDruhB2BPage();
 
+        const encryptedBody = getRequestBody(EncryptingDisabled, body, EncryptingPassword);
+
         fetch(url, {
             method: 'post',
             headers: {
                 "Content-type": getContentType(EncryptingDisabled)
             },
-            body: getRequestBody(EncryptingDisabled, body)
+            body: encryptedBody
         })
         .then(function (response) {
             if (response.status == 200) {
                 try {
                     response.text().then(function(responseText) {
 
-                        var text = getResponseBody(EncryptingDisabled, responseText)
+                        var text = getResponseBody(EncryptingDisabled, responseText, EncryptingPassword);
 
                         var results = {
                             "stav": getSoapTagValue(text, "stav"),

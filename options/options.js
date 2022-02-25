@@ -3,6 +3,7 @@ const chromeLocalStorageOptionsNamespace = "pro-oc-vzp-b2b-options";
 
 const B2B_SERVER_URL = "B2BServerUrl";
 const ENCRYPTING_DISABLED = "EncryptingDisabled";
+const ENCRYPTING_PASSWORD = "EncryptingPassword";
 
 function setOptionsToLocalStorage(options) {
   chrome.storage.local.set({[chromeLocalStorageOptionsNamespace] : options});
@@ -19,15 +20,21 @@ function setB2BServerUrl(B2BServerUrl) {
   B2BServerUrlElement.value = B2BServerUrl;
 }
 
+function setEncryptingPassword(EncryptingPassword) {
+  var EncryptingPasswordElement = document.getElementById(ENCRYPTING_PASSWORD);
+  EncryptingPasswordElement.value = EncryptingPassword;
+}
+
 function setEncryptingDisabled(EncryptingDisabled) {
   var EncryptingDisabledElement = document.getElementById(ENCRYPTING_DISABLED);
   EncryptingDisabledElement.checked = EncryptingDisabled;
 }
 
-function saveOptions(B2BServerUrl, EncryptingDisabled) {
+function saveOptions(B2BServerUrl, EncryptingDisabled, EncryptingPassword) {
   var options = new URLSearchParams();
   options.set(B2B_SERVER_URL, B2BServerUrl);
   options.set(ENCRYPTING_DISABLED, EncryptingDisabled);
+  options.set(ENCRYPTING_PASSWORD, EncryptingPassword);
 
   setOptionsToLocalStorage(options.toString());
 }
@@ -51,7 +58,8 @@ if(optionsForm) {
 
     saveOptions(
       optionsFormData.get(B2B_SERVER_URL),
-      EncryptingDisabled ? EncryptingDisabled.checked : false
+      EncryptingDisabled ? EncryptingDisabled.checked : false,
+      optionsFormData.get(ENCRYPTING_PASSWORD)
     )
   });
 }
@@ -60,5 +68,6 @@ window.onload = function() {
   getOptions(function(options) {
     setB2BServerUrl(options.get(B2B_SERVER_URL));
     setEncryptingDisabled(options.get(ENCRYPTING_DISABLED) == "true" ? true : false);
+    setEncryptingPassword(options.get(ENCRYPTING_PASSWORD));
   });
 };

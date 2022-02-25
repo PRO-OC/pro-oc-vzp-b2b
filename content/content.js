@@ -114,6 +114,7 @@ if(ZdravotniPojistovnaKod) {
     });
 }
 
+
 const TestovanyCisloPojistence = document.getElementById("TestovanyCisloPojistence");
 
 if(TestovanyCisloPojistence) {
