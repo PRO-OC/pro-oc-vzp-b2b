@@ -12,6 +12,11 @@ Osobní informace pacientů podmíněné přihlášením do modulu [Pacienti COV
 
 Aktuálně (k 24.1.2022) se nelze k [VZP B2B endpoint](https://prod.b2b.vzp.cz) dotazovat z rozšíření v prohlížeči z důvodu CORS Policy. Je zapotřebí zadat do nastavení vlastní proxy server, který dotaz zproztředkuje, např. [VZP B2B CORS Proxy](https://github.com/PRO-OC/pro-oc-vzp-b2b-cors-proxy). Defaultně se body požadavky šifrují pomocí AES knihovnou [crypto-js](https://github.com/brix/crypto-js). Toto šifrování lze vypnout v nastavení.
 
+## Změny pro Mozilla Firefox
+
+- Použití manifest souboru s verzí 2 ```manifest.v2.json```
+- Odstranění řádku ```import CryptoJS from "./../lib/crypto-js.min.js";``` ze souboru ```background/background.js``` 
+
 ## Žádanky testů COVID-19
 
 - Na stránku již vystavené žadanky přidává pod informace o vystavujícím zdravotnickém zařízení také informace o smlouvě daného ZZ s pojišťovnou
