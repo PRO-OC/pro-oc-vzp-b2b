@@ -15,7 +15,7 @@ Aktuálně (k 24.1.2022) se nelze k [VZP B2B endpoint](https://prod.b2b.vzp.cz) 
 ## Změny pro Mozilla Firefox
 
 - Použití manifest souboru s verzí 2 ```manifest.v2.json```
-- Odstranění řádku ```import CryptoJS from "./../lib/crypto-js.min.js";``` ze souboru ```background/background.js``` 
+- Odstranění řádku ```importScripts("../lib/crypto-js.min.js");``` ze souboru ```background/background.js``` 
 
 ## Žádanky testů COVID-19
 
