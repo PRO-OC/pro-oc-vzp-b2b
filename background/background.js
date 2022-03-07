@@ -133,6 +133,7 @@ function stavSmlouvyICPICPPB2B(ICP_ICPP, onSuccess, onError) {
         var B2BServerUrl = B2BServerUrlFromOptions ? B2BServerUrlFromOptions : DEFAULT_B2B_PROD_SERVER_URL;
 
         var EncryptingDisabled = options.get("EncryptingDisabled") == "true" ? true : false;
+        var EncryptingPassword = options.get("EncryptingPassword");
 
         var DnesniDatum = new Date();
         DnesniDatumString = DnesniDatum.getFullYear() + "-" + padStart((DnesniDatum.getMonth() + 1 ), 2, "0") + "-" + padStart(DnesniDatum.getDate(), 2, "0");
@@ -146,7 +147,7 @@ function stavSmlouvyICPICPPB2B(ICP_ICPP, onSuccess, onError) {
             headers: {
                 "Content-type": getContentType(EncryptingDisabled)
             },
-            body: getRequestBody(EncryptingDisabled, body)
+            body: getRequestBody(EncryptingDisabled, body, EncryptingPassword)
         })
         .then(function (response) {
             if (response.status == 200) {
