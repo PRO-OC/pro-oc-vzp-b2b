@@ -87,7 +87,8 @@ function VysledekKontrolyZdravotniPojistovnaText() {
                     VysledekNextElement.parentNode.insertBefore(VysledekElement, VysledekNextElement.nextElementSibling);
                 } else {
                     VysledekElement = getVysledekKontrolyZdravotniPojistovnaTextElement(
-                        "Číslo pojištěnce (" + CisloPojistence + ") nebylo možné ověřit. Problém na straně zprostředkovatele ověření nebo poskytovatele ověření VZP."
+                        "Číslo pojištěnce (" + CisloPojistence + "):" + "<br><br>" + 
+                        "Nebylo možné ověřit. Problém na straně zprostředkovatele ověření nebo poskytovatele ověření VZP."
                     );
                     VysledekElement.setAttribute("id", VysledekKontrolyZdravotniPojistovnaElementId);
                     VysledekNextElement.parentNode.insertBefore(VysledekElement, VysledekNextElement.nextElementSibling);
