@@ -141,13 +141,15 @@ function stavSmlouvyICPICPPB2B(ICP_ICPP, onSuccess, onError) {
         var body = "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\"><soap:Body xmlns:ns1=\"http://xmlns.gemsystem.cz/stavSmlouvyICPICPPB2B\"><ns1:stavSmlouvyICPICPPB2BZadost><ns1:ICP_ICPP>" + ICP_ICPP + "</ns1:ICP_ICPP><ns1:kDatu>" + DnesniDatumString + "</ns1:kDatu></ns1:stavSmlouvyICPICPPB2BZadost></soap:Body></soap:Envelope>";
 
         var url = B2BServerUrl + getStavSmlouvyICPICPPB2B();
-    
+
+        const encryptedBody = getRequestBody(EncryptingDisabled, body, EncryptingPassword);
+
         fetch(url, {
             method: 'post',
             headers: {
                 "Content-type": getContentType(EncryptingDisabled)
             },
-            body: getRequestBody(EncryptingDisabled, body, EncryptingPassword)
+            body: encryptedBody
         })
         .then(function (response) {
             if (response.status == 200) {
