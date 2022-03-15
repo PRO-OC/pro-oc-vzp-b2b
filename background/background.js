@@ -156,7 +156,7 @@ function stavSmlouvyICPICPPB2B(ICP_ICPP, onSuccess, onError) {
                 try {
                     response.text().then(function(responseText) {
 
-                        var text = getResponseBody(EncryptingDisabled, responseText);
+                        var text = getResponseBody(EncryptingDisabled, responseText, EncryptingPassword);
 
                         var stavVyrizeniPozadavku = getSoapTagValue(text, "stavVyrizeniPozadavku");
 
