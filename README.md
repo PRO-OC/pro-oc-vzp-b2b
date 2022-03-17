@@ -37,3 +37,7 @@ Aktuálně (k 24.1.2022) se nelze k [VZP B2B endpoint](https://prod.b2b.vzp.cz) 
 ![Preview](preview/prubeh_pojisteni_detail_pacienta.png)
 
 ![Preview](preview/prubeh_pojisteni_detail_pacienta_nepojisten.png)
+
+## Použité knihovny
+
+- [DOMPurify 2.3.6](https://github.com/cure53/DOMPurify/blob/2.3.6/dist/purify.min.js)

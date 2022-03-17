@@ -15,7 +15,7 @@
     "matches": [
       "*://*.ksrzis.cz/*"
     ],
-    "js": ["content/content.js"]
+    "js": ["lib/purify-2.3.6.min.js", "content/content.js"]
   }],
   "options_ui": {
     "page": "options/options.html",
