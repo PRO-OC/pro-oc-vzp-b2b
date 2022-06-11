@@ -2,12 +2,13 @@ function getRegistrCUDOvereniUrl() {
     return "/Registr/CUD/Overeni";
 }
 
-function getVysledekKontrolyZdravotniPojistovnaTextElement(text) {
+function getVysledekKontrolyZdravotniPojistovnaTextElement(text, useTd) {
     var VysledekKontrolyZdravotniPojistovnaTextElement = document.getElementById("VysledekKontrolyZdravotniPojistovna");
 
     if(!VysledekKontrolyZdravotniPojistovnaTextElement) {
-        VysledekKontrolyZdravotniPojistovnaTextElement = document.createElement("div");
+        VysledekKontrolyZdravotniPojistovnaTextElement = document.createElement(useTd ? "td" : "div");
         VysledekKontrolyZdravotniPojistovnaTextElement.setAttribute("class", "textField");
+        VysledekKontrolyZdravotniPojistovnaTextElement.setAttribute("style", "vertical-align: text-top;");
     } else {
         VysledekKontrolyZdravotniPojistovnaTextElement.style.display = "block";
     }
@@ -20,9 +21,13 @@ function VysledekKontrolyZdravotniPojistovnaText() {
 
     const VysledekKontrolyZdravotniPojistovnaElementId = "VysledekKontrolyZdravotniPojistovna";
 
-    // Vystavení žádanky
-    const ZdravotniPojistovnaKod = document.getElementById("ZdravotniPojistovnaKod");
-    const TestovanyCisloPojistence = document.getElementById("TestovanyCisloPojistence");
+    // Overeni zadanky
+    if(KodPojistovnyPrintDiv) {
+        ZdravotniPojistovnaKod = KodPojistovnyPrintDiv;
+    }
+    if(CisloPojistencePrintDiv) {
+        TestovanyCisloPojistence = CisloPojistencePrintDiv;
+    }
 
     // Detail pacienta
     const Pacient_CisloPojistenceLabelElement = document.querySelector('label[for="Pacient_CisloPojistence"]');
@@ -31,19 +36,22 @@ function VysledekKontrolyZdravotniPojistovnaText() {
         DetailPacientCisloPojistence = Pacient_CisloPojistenceLabelElement.nextElementSibling.innerText;
     }
 
+    var ZdravotniPojistovnaKodValue = ZdravotniPojistovnaKod && ZdravotniPojistovnaKod.value ? ZdravotniPojistovnaKod.value : (ZdravotniPojistovnaKod && ZdravotniPojistovnaKod.innerText ? ZdravotniPojistovnaKod.innerText.split(" ")[0] : "");
+
     if(
         ZdravotniPojistovnaKod && (
-            ZdravotniPojistovnaKod.value == "111" ||
-            ZdravotniPojistovnaKod.value == "201" ||
-            ZdravotniPojistovnaKod.value == "205" ||
-            ZdravotniPojistovnaKod.value == "207" ||
-            ZdravotniPojistovnaKod.value == "209" ||
-            ZdravotniPojistovnaKod.value == "211" ||
-            ZdravotniPojistovnaKod.value == "213"
+            ZdravotniPojistovnaKodValue == "111" ||
+            ZdravotniPojistovnaKodValue == "201" ||
+            ZdravotniPojistovnaKodValue == "205" ||
+            ZdravotniPojistovnaKodValue == "207" ||
+            ZdravotniPojistovnaKodValue == "209" ||
+            ZdravotniPojistovnaKodValue == "211" ||
+            ZdravotniPojistovnaKodValue == "213"
         ) || Pacient_CisloPojistenceLabelElement
     ) {
+
         const CisloPojistenceElement = Pacient_CisloPojistenceLabelElement ? Pacient_CisloPojistenceLabelElement : TestovanyCisloPojistence;
-        const CisloPojistence = DetailPacientCisloPojistence ? DetailPacientCisloPojistence : (TestovanyCisloPojistence ? TestovanyCisloPojistence.value : null)
+        const CisloPojistence = DetailPacientCisloPojistence ? DetailPacientCisloPojistence : (TestovanyCisloPojistence && TestovanyCisloPojistence.value ? TestovanyCisloPojistence.value : (TestovanyCisloPojistence && TestovanyCisloPojistence.innerText ? TestovanyCisloPojistence.innerText : null))
         const VysledekNextElement = ZdravotniPojistovnaKod ? ZdravotniPojistovnaKod : Pacient_CisloPojistenceLabelElement.nextElementSibling;
 
         if(CisloPojistence) {
@@ -60,8 +68,8 @@ function VysledekKontrolyZdravotniPojistovnaText() {
 
                     if(VysledekKontroly.stav == "pojisten") {
 
-                        if(ZdravotniPojistovnaKod && VysledekKontroly.kodPojistovny != ZdravotniPojistovnaKod.value) {
-                            alert("Neshoduje se kód pojišťovny na žádance: '" + ZdravotniPojistovnaKod.value + "' a kód pojištovny dohledaného k číslu pojištěnce: '" + VysledekKontroly.kodPojistovny + "'");
+                        if(ZdravotniPojistovnaKod && VysledekKontroly.kodPojistovny != ZdravotniPojistovnaKodValue) {
+                            alert("Neshoduje se kód pojišťovny na žádance: '" + ZdravotniPojistovnaKodValue + "' a kód pojištovny dohledaného k číslu pojištěnce: '" + VysledekKontroly.kodPojistovny + "'");
                         }
 
                         VysledekElement = getVysledekKontrolyZdravotniPojistovnaTextElement(
@@ -70,6 +78,7 @@ function VysledekKontrolyZdravotniPojistovnaText() {
                             "Kód: " + VysledekKontroly.kodPojistovny + "<br>" +
                             "Název: " + VysledekKontroly.nazevPojistovny + "<br>" +
                             "Druh: " + VysledekKontroly.druhPojisteni + "<br>",
+                            true
                         );
                     } else if(VysledekKontroly.stav == "nepojisten") {
 
@@ -79,7 +88,8 @@ function VysledekKontrolyZdravotniPojistovnaText() {
 
                         VysledekElement = getVysledekKontrolyZdravotniPojistovnaTextElement(
                             "Číslo pojištěnce (" + CisloPojistence + "):" + "<br><br>" +
-                            "Stav: " + VysledekKontroly.stav + "<br>"
+                            "Stav: " + VysledekKontroly.stav + "<br>",
+                            true
                         );
                     }
 
@@ -88,7 +98,8 @@ function VysledekKontrolyZdravotniPojistovnaText() {
                 } else {
                     VysledekElement = getVysledekKontrolyZdravotniPojistovnaTextElement(
                         "Číslo pojištěnce (" + CisloPojistence + "):" + "<br><br>" + 
-                        "Nebylo možné ověřit. Problém na straně zprostředkovatele ověření nebo poskytovatele ověření VZP."
+                        "Nebylo možné ověřit. Problém na straně zprostředkovatele ověření nebo poskytovatele ověření VZP.",
+                        true
                     );
                     VysledekElement.setAttribute("id", VysledekKontrolyZdravotniPojistovnaElementId);
                     VysledekNextElement.parentNode.insertBefore(VysledekElement, VysledekNextElement.nextElementSibling);
@@ -96,7 +107,8 @@ function VysledekKontrolyZdravotniPojistovnaText() {
             });
         } else if(CisloPojistenceElement && ZdravotniPojistovnaKod) {
             VysledekElement = getVysledekKontrolyZdravotniPojistovnaTextElement(
-                "Zadejte číslo pojištěnce."
+                "Zadejte číslo pojištěnce.",
+                true
             );
             VysledekElement.setAttribute("id", VysledekKontrolyZdravotniPojistovnaElementId);
             VysledekNextElement.parentNode.insertBefore(VysledekElement, VysledekNextElement.nextElementSibling);
@@ -109,7 +121,7 @@ function VysledekKontrolyZdravotniPojistovnaText() {
     }
 }
 
-const ZdravotniPojistovnaKod = document.getElementById("ZdravotniPojistovnaKod");
+var ZdravotniPojistovnaKod = document.getElementById("ZdravotniPojistovnaKod");
 
 if(ZdravotniPojistovnaKod) {
     ZdravotniPojistovnaKod.addEventListener("change", () => {
@@ -117,8 +129,7 @@ if(ZdravotniPojistovnaKod) {
     });
 }
 
-
-const TestovanyCisloPojistence = document.getElementById("TestovanyCisloPojistence");
+var TestovanyCisloPojistence = document.getElementById("TestovanyCisloPojistence");
 
 if(TestovanyCisloPojistence) {
     TestovanyCisloPojistence.addEventListener("change", () => {
@@ -126,14 +137,22 @@ if(TestovanyCisloPojistence) {
     });
 }
 
-VysledekKontrolyZdravotniPojistovnaText();
-
+var KodPojistovnyPrintDiv = null;
+var CisloPojistencePrintDiv = null;
 
 const printDiv = document.getElementById("printDiv");
 
 if(printDiv && window.location.pathname == getRegistrCUDOvereniUrl()) {
-    var ICPElement = document.evaluate('//td[contains(text(), "IČP / Branch ID No.")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+    const KodPojistovnyElement = document.evaluate('//td[contains(text(), "Zdravotní pojišťovna")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+    KodPojistovnyPrintDiv = KodPojistovnyElement.singleNodeValue.nextSibling.nextSibling;
+    const CisloPojistenceElement = document.evaluate('//td[contains(text(), "Číslo pojištěnce")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+    CisloPojistencePrintDiv = CisloPojistenceElement.singleNodeValue.nextSibling.nextSibling;
+}
 
+VysledekKontrolyZdravotniPojistovnaText();
+
+if(printDiv && window.location.pathname == getRegistrCUDOvereniUrl()) {
+    var ICPElement = document.evaluate('//td[contains(text(), "IČP / Branch ID No.")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
     var ICP = ICPElement.singleNodeValue.nextSibling.nextSibling.innerText;
 
     chrome.runtime.sendMessage({
